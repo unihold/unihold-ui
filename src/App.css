@@ -46,6 +46,9 @@ html,body{
 .btn-primary{
   width:100%;
 }
+.btn-secondary{
+  width:100%;
+}
 
 .textbox-input{
   color: rgb(0, 0, 0);
@@ -119,6 +122,11 @@ html,body{
   text-decoration: none;
   color:black;
 }
+.modal-input{
+  width:100%;
+}
+
 footer{
   position:absolute; bottom:0px;
+
 }
