@@ -1,26 +1,35 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
+import Select from 'react-select';
 import { Container, Navbar, Nav, Row, Col, Button, Image, Card, Accordion, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTelegram, faGithub, faTwitter, faEthereum} from '@fortawesome/free-brands-svg-icons'
 import {faHorseHead, faPlus} from  '@fortawesome/free-solid-svg-icons'
 //https://etherscan.io/address/0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f#events
 //0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351 - uniswap ropsten v1 factory address
+//0x60B10C134088ebD63f80766874e2Cade05fc987B BAT ropsten
+//0x7d5E6A841Ec195F30911074d920EEc665A973A2D DAI ropsten
+//0x7FffaC23d59D287560DFecA7680B5393426Cf503 BEE ropsten
+//0x2f45b6Fb2F28A73f110400386da31044b2e953D4 TEST ropsten
 import Web3 from 'web3';
 
 
 function App() {
-  const uniholdABI = [{"inputs": [{"internalType": "address","name": "_token","type": "address"},{"internalType": "string","name": "_name","type": "string"},{"internalType": "string","name": "_symbol","type": "string"},{"internalType": "uint8","name": "_decimals","type": "uint8"},{"internalType": "uint256","name": "_currentEthToToken","type": "uint256"}],"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "from","type": "address"},{"indexed": true,"internalType": "address","name": "to","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokens","type": "uint256"}],"name": "Transfer","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xReinvested","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onReinvestment","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "incomingX","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onTokenPurchase","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokensBurned","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "xEarned","type": "uint256"}],"name": "onTokenSell","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xWithdrawn","type": "uint256"}],"name": "onWithdraw","type": "event"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "balanceOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "buyPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_xToSpend","type": "uint256"}],"name": "calculateTokensReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_tokensToSell","type": "uint256"}],"name": "calculateXReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "decimals","outputs": [{"internalType": "uint8","name": "","type": "uint8"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "dividendsOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "exit","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "myDividends","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "myTokens","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "name","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "reinvest","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "sell","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "sellPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "symbol","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalSupply","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalTokenBalance","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_toAddress","type": "address"},{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "transfer","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "withdraw","outputs": [],"stateMutability": "nonpayable","type": "function"}]
-const uniholdAddress = '0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39'; //TODO
 
-const uniholdFactoryABI = [{"inputs": [{"internalType": "address","name": "","type": "address"}],"name": "TokenToUnihold","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "","type": "uint256"}],"name": "contracts","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "count","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "token","type": "address"}],"name": "createNewContract","outputs": [{"internalType": "address","name": "newContract","type": "address"}],"stateMutability": "payable","type": "function"},{"inputs": [],"name": "getContracts","outputs": [{"internalType": "address[]","name": "","type": "address[]"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "","type": "uint256"}],"name": "idToUnihold","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "initialEthToTokenValue","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "","type": "address"}],"name": "uniholdToToken","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"}];
-const uniholdFactoryAddress = '0x6F9103B3f2fEe00D6Da04BE5F0FEe64CacAF2bE9'; //ropsten
+  const tokenABI = [{"inputs": [{"internalType": "address","name": "owner","type": "address"},{"internalType": "address","name": "spender","type": "address"}],"name": "allowance","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "spender","type": "address"},{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "approve","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "account","type": "address"}],"name": "balanceOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "decimals","outputs": [{"internalType": "uint8","name": "","type": "uint8"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "name","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "symbol","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "recipient","type": "address"},{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "transfer","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "sender","type": "address"},{"internalType": "address","name": "recipient","type": "address"},{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "transferFrom","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"}];
+  
+  const uniholdABI = [{"inputs": [{"internalType": "address","name": "_token","type": "address"},{"internalType": "string","name": "_name","type": "string"},{"internalType": "string","name": "_symbol","type": "string"},{"internalType": "uint8","name": "_decimals","type": "uint8"},{"internalType": "uint256","name": "_currentEthToToken","type": "uint256"}],"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "from","type": "address"},{"indexed": true,"internalType": "address","name": "to","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokens","type": "uint256"}],"name": "Transfer","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xReinvested","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onReinvestment","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "incomingX","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onTokenPurchase","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokensBurned","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "xEarned","type": "uint256"}],"name": "onTokenSell","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xWithdrawn","type": "uint256"}],"name": "onWithdraw","type": "event"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "balanceOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "buyPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_xToSpend","type": "uint256"}],"name": "calculateTokensReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_tokensToSell","type": "uint256"}],"name": "calculateXReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "decimals","outputs": [{"internalType": "uint8","name": "","type": "uint8"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "dividendsOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "exit","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "myDividends","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "myTokens","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "name","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "reinvest","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "sell","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "sellPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "symbol","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalSupply","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalTokenBalance","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_toAddress","type": "address"},{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "transfer","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "withdraw","outputs": [],"stateMutability": "nonpayable","type": "function"}];
+
+  const uniholdFactoryABI = [{"inputs": [{"internalType": "address","name": "","type": "address"}],"name": "TokenToUnihold","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "","type": "uint256"}],"name": "contracts","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "count","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "token","type": "address"}],"name": "createNewContract","outputs": [{"internalType": "address","name": "newContract","type": "address"}],"stateMutability": "payable","type": "function"},{"inputs": [],"name": "getContracts","outputs": [{"internalType": "address[]","name": "","type": "address[]"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "","type": "uint256"}],"name": "idToUnihold","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "initialEthToTokenValue","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "","type": "address"}],"name": "uniholdToToken","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"}]
+  const uniholdFactoryAddress = '0x84e6569e53F2b23dCb4139F406fF4a0F76BeaBb9'; //ropsten
 
   const [contracts, setContracts] = useState([]);
   const [currentContract, setCurrentContract] = useState("");
+  const [contractCount, setContractCount] = useState(0);
 
-  const [tokenName, setTokenName] = useState("DAI");
-  const [tokenAddress, setTokenAddress] = useState("0x2b591e99afe9f32eaa6214f7b7629768c40eeb39");
+  const [tokenName, setTokenName] = useState("");
+  const [tokenSymbol, setTokenSymbol] = useState("");
+  const [tokenAddress, setTokenAddress] = useState("");
   const [etherscanURL, setEtherscanURL] = useState("");
   const [uniswapURL, setUniswapURL] = useState("");
 
@@ -47,18 +56,18 @@ const uniholdFactoryAddress = '0x6F9103B3f2fEe00D6Da04BE5F0FEe64CacAF2bE9'; //ro
 
   const [accounts,setAccounts] = useState([]);
 
-let web3 = new Web3(window.ethereum);
-    const uniholdInstance = new web3.eth.Contract(uniholdABI, uniholdAddress);
+  let web3 = new Web3(window.ethereum);
+  var uniholdInstance = new web3.eth.Contract(uniholdABI, currentContract);;
+
+
+    
     const factoryInstance = new web3.eth.Contract(uniholdFactoryABI, uniholdFactoryAddress);
+   
 
    useEffect(() =>{
 
    connectMetamask();
    
-    setTokenName("DAI");
-    setTokenAddress("0x2b591e99afe9f32eaa6214f7b7629768c40eeb39");
-
-    console.log(web3.currentProvider);
      async function loadMetamask() {
 
         if(window.ethereum){
@@ -66,12 +75,37 @@ let web3 = new Web3(window.ethereum);
           setAccounts(accounts);
 
           //Get unihold contract addresses
-          factoryInstance.methods.getContracts().call().then(contractArray => {
-            setContracts(contractArray);
-            setCurrentContract(contractArray[0]);
-            
-          });
+          factoryInstance.methods.count().call().then(c =>
+          {
+            setContractCount(c);
+            for (var i = 0; i < c; i++) {
+                factoryInstance.methods.contracts(i).call().then(contract => {
+                  
+                  var currentContract = contract;
+                  console.log("Current contract " + contract);
+                  factoryInstance.methods.uniholdToToken(contract).call().then(tok => {
+                    let thisToken = new web3.eth.Contract(tokenABI, tok);
+                    thisToken.methods.symbol().call().then(n => {
 
+                   if(tokenAddress == ""){
+                        setTokenAddress(tok);
+                        setTokenSymbol(n);
+                        uniholdInstance = new web3.eth.Contract(uniholdABI, currentContract);
+                      }
+
+                     
+                      setContracts(contracts => contracts.concat({"label": n, "value": currentContract, "token": tok}));
+
+                    });
+                      
+                  });
+                });
+              
+          }}
+          );
+       
+
+ /* 
           uniholdInstance.methods.totalTokenBalance().call().then(totalBalance =>
             setContractBalance(totalBalance));
 
@@ -92,7 +126,7 @@ let web3 = new Web3(window.ethereum);
           uniholdInstance.methods.balanceOf(accounts[0]).call().then(bal =>
             setUserTokens(bal));
         }
-
+*/
           setEstimatedValue(userTokens * sellPrice);
 
      }
@@ -102,8 +136,8 @@ let web3 = new Web3(window.ethereum);
     loadMetamask();
   }
 
-  setEtherscanURL('https://etherscan.io/token/' + tokenAddress);
-  setUniswapURL('https://app.uniswap.org/#/swap?inputCurrency=' + tokenAddress + '&use=v1');
+ 
+ 
 
   }, []);
 
@@ -116,13 +150,14 @@ let web3 = new Web3(window.ethereum);
 
   const buy = (amount) => {
     uniholdInstance.methods.buy(amount).send({from:accounts[0]});
+  console.log(contracts);
   }
 
   const withdraw = () => {
     uniholdInstance.methods.withdraw().send({from:accounts[0]});
   };
   const reinvest = () => {
-    uniholdInstance.methods.reinvest().send({from:accounts[0]});
+   uniholdInstance.methods.reinvest().send({from:accounts[0]});
   };
   const sell = (amount) => {
     uniholdInstance.methods.sell(amount).send({from:accounts[0]});
@@ -134,6 +169,18 @@ let web3 = new Web3(window.ethereum);
   const createNew = () => {
 
    factoryInstance.methods.createNewContract(newTokenAddress).send({from:accounts[0]}).then(handleClose);
+  }
+
+
+  const changeToken = (option) =>{
+    setCurrentContract(option.value);
+    setTokenSymbol(option.label);
+    setTokenAddress(option.token);
+    setEtherscanURL('https://etherscan.io/token/' + option.token);
+    setUniswapURL('https://app.uniswap.org/#/swap?inputCurrency=' + option.token + '&use=v1');
+   uniholdInstance = new web3.eth.Contract(uniholdABI, option.value);
+   console.log(uniholdInstance);
+                      
   }
 
   return (
@@ -180,12 +227,9 @@ let web3 = new Web3(window.ethereum);
         <Col>
           <Row>
           <Col className='token-select-column'>
-            Token:  <select value={tokenName} onChange={e => setTokenName(e.target.value)}> 
-            <option value="DAI">DAI</option>
-            <option value="BAND">BAND</option>
-            <option value="HEX">HEX</option>
-            <option value="USDC">USDC</option>
-            </select>
+           <Select options={contracts} 
+           placeholder="Select Token..."
+            onChange={opt => changeToken(opt)}/>
             </Col>
             <Col className="etherscan-column">
 
@@ -273,19 +317,19 @@ let web3 = new Web3(window.ethereum);
               <Row>
                 <div className="info-box">
                   <div className="info-header">Contract Balance</div>
-                  <div className="info-body">{contractBalance} {tokenName}</div>
+                  <div className="info-body">{contractBalance} {tokenSymbol}</div>
                 </div>
               </Row>
                <Row>
                 <div className="info-box">
                   <div className="info-header">Buy Price</div>
-                  <div className="info-body">{buyPrice} {tokenName}</div>
+                  <div className="info-body">{buyPrice} {tokenSymbol}</div>
                 </div>
               </Row>
               <Row>
                 <div className="info-box">
                   <div className="info-header">Dividends</div>
-                  <div className="info-body">{userDividends} {tokenName}</div>
+                  <div className="info-body">{userDividends} {tokenSymbol}</div>
                 </div>
               </Row>
             </Col>
@@ -294,27 +338,36 @@ let web3 = new Web3(window.ethereum);
                 <Row>
                 <div className="info-box">
                   <div className="info-header">Total Tokens</div>
-                  <div className="info-body">{totalTokens} UNI{tokenName}</div>
+                  <div className="info-body">{totalTokens} UNI{tokenSymbol}</div>
                 </div>
               </Row>
                <Row>
                 <div className="info-box">
                   <div className="info-header">Sell Price</div>
-                  <div className="info-body">{sellPrice} {tokenName}</div>
+                  <div className="info-body">{sellPrice} {tokenSymbol}</div>
                 </div>
               </Row>
               <Row>
                 <div className="info-box">
                   <div className="info-header">Total tokens </div>
-                  <div className="info-body">{userTokens} UNI{tokenName}</div>
+                  <div className="info-body">{userTokens} UNI{tokenSymbol}</div>
                 </div>
               </Row>
+
             </Col>
+
             <Col xs={12} className="padded-column">
+
              <div className="info-box">
-                  <div className="info-header">Estimated Value of UNI{tokenName} tokens</div>
-                  <div className="info-body">{estimatedValue} {tokenName}</div>
+                  <div className="info-header">Estimated Value of UNI{tokenSymbol} tokens</div>
+                  <div className="info-body">{estimatedValue} {tokenSymbol}</div>
                 </div>
+            <div>
+
+            <div className="help-text">UNI{tokenSymbol} contract address: {currentContract}</div>
+            
+            </div>
+            
             </Col>
 
           </Row>
