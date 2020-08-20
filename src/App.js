@@ -12,19 +12,19 @@ import {faHorseHead, faPlus} from  '@fortawesome/free-solid-svg-icons'
 //0x7FffaC23d59D287560DFecA7680B5393426Cf503 BEE ropsten
 //0x2f45b6Fb2F28A73f110400386da31044b2e953D4 TEST ropsten
 import Web3 from 'web3';
-
+var BigNumber = require('big-number');
 
 function App() {
 
   const tokenABI = [{"inputs": [{"internalType": "address","name": "owner","type": "address"},{"internalType": "address","name": "spender","type": "address"}],"name": "allowance","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "spender","type": "address"},{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "approve","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "account","type": "address"}],"name": "balanceOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "decimals","outputs": [{"internalType": "uint8","name": "","type": "uint8"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "name","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "symbol","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "recipient","type": "address"},{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "transfer","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "address","name": "sender","type": "address"},{"internalType": "address","name": "recipient","type": "address"},{"internalType": "uint256","name": "amount","type": "uint256"}],"name": "transferFrom","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"}];
   
-  const uniholdABI = [{"inputs": [{"internalType": "address","name": "_token","type": "address"},{"internalType": "string","name": "_name","type": "string"},{"internalType": "string","name": "_symbol","type": "string"},{"internalType": "uint8","name": "_decimals","type": "uint8"},{"internalType": "uint256","name": "_currentEthToToken","type": "uint256"}],"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "from","type": "address"},{"indexed": true,"internalType": "address","name": "to","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokens","type": "uint256"}],"name": "Transfer","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xReinvested","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onReinvestment","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "incomingX","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onTokenPurchase","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokensBurned","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "xEarned","type": "uint256"}],"name": "onTokenSell","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xWithdrawn","type": "uint256"}],"name": "onWithdraw","type": "event"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "balanceOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "buyPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_xToSpend","type": "uint256"}],"name": "calculateTokensReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_tokensToSell","type": "uint256"}],"name": "calculateXReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "decimals","outputs": [{"internalType": "uint8","name": "","type": "uint8"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "dividendsOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "exit","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "myDividends","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "myTokens","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "name","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "reinvest","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "sell","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "sellPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "symbol","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalSupply","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalTokenBalance","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_toAddress","type": "address"},{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "transfer","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "withdraw","outputs": [],"stateMutability": "nonpayable","type": "function"}];
+  const uniholdABI = [{"inputs": [{"internalType": "address","name": "_token","type": "address"},{"internalType": "string","name": "_name","type": "string"},{"internalType": "string","name": "_symbol","type": "string"},{"internalType": "uint8","name": "_decimals","type": "uint8"},{"internalType": "uint256","name": "_currentEthToToken","type": "uint256"},{"internalType": "address","name": "_uniholdFactory","type": "address"}],"stateMutability": "nonpayable","type": "constructor"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "from","type": "address"},{"indexed": true,"internalType": "address","name": "to","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokens","type": "uint256"}],"name": "Transfer","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xReinvested","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onReinvestment","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "incomingX","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "tokensMinted","type": "uint256"}],"name": "onTokenPurchase","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "tokensBurned","type": "uint256"},{"indexed": false,"internalType": "uint256","name": "xEarned","type": "uint256"}],"name": "onTokenSell","type": "event"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "customerAddress","type": "address"},{"indexed": false,"internalType": "uint256","name": "xWithdrawn","type": "uint256"}],"name": "onWithdraw","type": "event"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "balanceOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "buy","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "buyPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_xToSpend","type": "uint256"}],"name": "calculateTokensReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "_tokensToSell","type": "uint256"}],"name": "calculateXReceived","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "decimals","outputs": [{"internalType": "uint8","name": "","type": "uint8"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_customerAddress","type": "address"}],"name": "dividendsOf","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "exit","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "myDividends","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "myTokens","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "name","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "reinvest","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "sell","outputs": [],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "sellPrice","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "symbol","outputs": [{"internalType": "string","name": "","type": "string"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "token","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalSupply","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "totalTokenBalance","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "_toAddress","type": "address"},{"internalType": "uint256","name": "_amountOfTokens","type": "uint256"}],"name": "transfer","outputs": [{"internalType": "bool","name": "","type": "bool"}],"stateMutability": "nonpayable","type": "function"},{"inputs": [],"name": "withdraw","outputs": [],"stateMutability": "nonpayable","type": "function"}];
 
   const uniholdFactoryABI = [{"inputs": [{"internalType": "address","name": "","type": "address"}],"name": "TokenToUnihold","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "","type": "uint256"}],"name": "contracts","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "count","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "token","type": "address"}],"name": "createNewContract","outputs": [{"internalType": "address","name": "newContract","type": "address"}],"stateMutability": "payable","type": "function"},{"inputs": [],"name": "getContracts","outputs": [{"internalType": "address[]","name": "","type": "address[]"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "uint256","name": "","type": "uint256"}],"name": "idToUnihold","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"},{"inputs": [],"name": "initialEthToTokenValue","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"},{"inputs": [{"internalType": "address","name": "","type": "address"}],"name": "uniholdToToken","outputs": [{"internalType": "address","name": "","type": "address"}],"stateMutability": "view","type": "function"}]
-  const uniholdFactoryAddress = '0x84e6569e53F2b23dCb4139F406fF4a0F76BeaBb9'; //ropsten
+  const uniholdFactoryAddress = '0x945e751f16432254d262ce7ede2a0dbf21606b20'; //ropsten
 
   const [contracts, setContracts] = useState([]);
-  const [currentContract, setCurrentContract] = useState("");
+  const [currentContract, setCurrentContract] = useState("0x945e751f16432254d262ce7ede2a0dbf21606b20");
   const [contractCount, setContractCount] = useState(0);
 
   const [tokenName, setTokenName] = useState("");
@@ -33,21 +33,26 @@ function App() {
   const [etherscanURL, setEtherscanURL] = useState("");
   const [uniswapURL, setUniswapURL] = useState("");
 
-  const [contractBalance, setContractBalance] = useState(0);
-  const [totalTokens, setTotalTokens] = useState(0);
-  const [buyPrice, setBuyPrice] = useState(0);
-  const [sellPrice, setSellPrice] = useState(0);
+  const [contractBalance, setContractBalance] = useState(0.0);
+  const [totalTokens, setTotalTokens] = useState(0.0);
+  const [buyPrice, setBuyPrice] = useState(0.0);
+  const [sellPrice, setSellPrice] = useState(0.0);
 
   const [userDividends, setUserDividends] = useState(0);
   const [userTokens, setUserTokens] = useState(0);
   const [estimatedValue, setEstimatedValue] = useState(0);
 
+  const [approveAmount, setApproveAmount] = useState(0);
   const [buyAmount, setBuyAmount] = useState(0);
   const [sellAmount, setSellAmount] = useState(0);
   const [transferAmount, setTransferAmount] = useState(0);
   const [transferToAddress, setTransferToAddress] = useState(0);
 
+  const [approvedBalance, setApprovedBalance] = useState(0.0);
+  const [walletBalance, setWalletBalance] = useState(0.0);
+
   const [newTokenAddress, setNewTokenAddress] = useState("");
+  const [tokenDecimals, setTokenDecimals] = useState(0);
 
   const [show, setShow] = useState(false);
 
@@ -57,12 +62,12 @@ function App() {
   const [accounts,setAccounts] = useState([]);
 
   let web3 = new Web3(window.ethereum);
-  var uniholdInstance = new web3.eth.Contract(uniholdABI, currentContract);;
 
-
+  var uniholdInstance = new web3.eth.Contract(uniholdABI, currentContract);
     
-    const factoryInstance = new web3.eth.Contract(uniholdFactoryABI, uniholdFactoryAddress);
-   
+  const factoryInstance = new web3.eth.Contract(uniholdFactoryABI, uniholdFactoryAddress);
+  var tokenInstance = new web3.eth.Contract(tokenABI, tokenAddress);
+
 
    useEffect(() =>{
 
@@ -90,43 +95,26 @@ function App() {
                    if(tokenAddress == ""){
                         setTokenAddress(tok);
                         setTokenSymbol(n);
-                        uniholdInstance = new web3.eth.Contract(uniholdABI, currentContract);
+                        uniholdInstance = new web3.eth.Contract(uniholdABI, contract);
                       }
 
-                     
-                      setContracts(contracts => contracts.concat({"label": n, "value": currentContract, "token": tok}));
+                      setContracts(contracts => contracts.concat({"label": n, "value": contract, "token": tok}));
 
+                      tokenInstance = new web3.eth.Contract(tokenABI, tok);
+                      tokenInstance.methods.decimals().call().then(decimals => 
+                      {
+                        setTokenDecimals(decimals);
+                        
+                      });
                     });
                       
                   });
                 });
-              
           }}
           );
        
+           updateInfo();
 
- /* 
-          uniholdInstance.methods.totalTokenBalance().call().then(totalBalance =>
-            setContractBalance(totalBalance));
-
-          uniholdInstance.methods.totalSupply().call().then(totalSupply =>
-            setTotalTokens(totalSupply));
-
-          uniholdInstance.methods.buyPrice().call().then(price =>
-            setBuyPrice(price));
-
-          uniholdInstance.methods.sellPrice().call().then(price =>
-            setSellPrice(price));
-
-          if(accounts[0] != undefined){
-
-          uniholdInstance.methods.dividendsOf(accounts[0]).call().then(divs =>
-            setUserDividends(divs));
-
-          uniholdInstance.methods.balanceOf(accounts[0]).call().then(bal =>
-            setUserTokens(bal));
-        }
-*/
           setEstimatedValue(userTokens * sellPrice);
 
      }
@@ -136,11 +124,33 @@ function App() {
     loadMetamask();
   }
 
- 
- 
-
   }, []);
 
+   const updateInfo = () => {
+
+          uniholdInstance.methods.totalTokenBalance().call().then(totalBalance =>
+            setContractBalance(totalBalance));
+
+          uniholdInstance.methods.totalSupply().call().then(totalSupply =>
+            setTotalTokens(totalSupply));
+
+          uniholdInstance.methods.buyPrice().call().then(price =>
+            setBuyPrice(price / (10 ** tokenDecimals)));
+
+          uniholdInstance.methods.sellPrice().call().then(price =>
+            setSellPrice(price / (10 ** tokenDecimals)));
+
+          if(accounts[0] != undefined){
+
+          uniholdInstance.methods.dividendsOf(accounts[0]).call().then(divs =>
+            setUserDividends(divs));
+
+          uniholdInstance.methods.balanceOf(accounts[0]).call().then(bal =>
+            setUserTokens(bal));
+
+         
+        }
+   }
 
    const connectMetamask = () => {
       if(window.ethereum){   
@@ -148,9 +158,13 @@ function App() {
     }
    }
 
+  const approve = (amount) => {
+    tokenInstance.methods.approve(currentContract, (amount * 10 ** tokenDecimals).toString()).send({from:accounts[0]});
+  }
+
   const buy = (amount) => {
-    uniholdInstance.methods.buy(amount).send({from:accounts[0]});
-  console.log(contracts);
+    uniholdInstance.methods.buy(amount * 10 ** tokenDecimals).send({from:accounts[0]});
+    console.log(contracts);
   }
 
   const withdraw = () => {
@@ -160,10 +174,10 @@ function App() {
    uniholdInstance.methods.reinvest().send({from:accounts[0]});
   };
   const sell = (amount) => {
-    uniholdInstance.methods.sell(amount).send({from:accounts[0]});
+    uniholdInstance.methods.sell(amount * 10 ** tokenDecimals).send({from:accounts[0]});
   };
   const transfer = (to, amount) => {
-    uniholdInstance.methods.transfer(to, amount).send({from:accounts[0]});
+    uniholdInstance.methods.transfer(to, amount * 10 ** tokenDecimals).send({from:accounts[0]});
   };
 
   const createNew = () => {
@@ -180,7 +194,14 @@ function App() {
     setUniswapURL('https://app.uniswap.org/#/swap?inputCurrency=' + option.token + '&use=v1');
    uniholdInstance = new web3.eth.Contract(uniholdABI, option.value);
    console.log(uniholdInstance);
-                      
+   tokenInstance.methods.allowance(accounts[0], currentContract).call().then(all =>
+                        {
+                        setApprovedBalance(all / (10 ** tokenDecimals))
+                        console.log("Allowance " + all)
+                      })
+   tokenInstance.methods.balanceOf(accounts[0]).call().then(bal => setWalletBalance(bal / (10 ** tokenDecimals)));
+
+   updateInfo();
   }
 
   return (
@@ -208,8 +229,8 @@ function App() {
         </Modal.Header>
 
         <Modal.Body>
-         <small> - The token must already be listed on Uniswap. <br/>
-          - Initial price and increment are calculated based on current uniswap price. <br/>
+         <small> - The token must already be listed on Uniswap V1. <br/>
+          - Initial price and increment are calculated based on current uniswap V1 price. <br/>
           - Only 1 unihold contract can be created per ERC token. <br/>
           - Clicking submit will create a blockchain transaction to create contract</small>
           <input className="modal-input" placeholder="Token Address 0x..." onChange={v => setNewTokenAddress(v.target.value)}></input>
@@ -239,7 +260,22 @@ function App() {
           </Row>
           <Row>
             <Col xs={4} >
-            <Accordion defaultActiveKey="0">
+            <Accordion defaultActiveKey="-1">
+   <Card>
+    <Card.Header>
+      <Accordion.Toggle as={Button} variant="link" eventKey="-1">
+       Approve
+      </Accordion.Toggle>
+    </Card.Header>
+    <Accordion.Collapse eventKey="-1">
+      <Col>
+      <input className="textbox-input" placeholder="0.0" onChange={v => setApproveAmount(v.target.value)}></input>
+      <Button onClick={() => approve(approveAmount)}>Approve</Button>
+      <p className="help-text">You must approve an amount of {tokenSymbol} before you can use them to buy UNI{tokenSymbol}.</p>
+      <p className="help-text">Current Amount Approved: {approvedBalance} {tokenSymbol}.</p>
+      </Col>
+    </Accordion.Collapse>
+  </Card>
   <Card>
     <Card.Header>
       <Accordion.Toggle as={Button} variant="link" eventKey="0">
@@ -332,6 +368,13 @@ function App() {
                   <div className="info-body">{userDividends} {tokenSymbol}</div>
                 </div>
               </Row>
+              <Row>
+                <div className="info-box">
+                  <div className="info-header">Your wallet Balance</div>
+                  <div className="info-body">{walletBalance} {tokenSymbol}</div>
+                </div>
+              </Row>
+              
             </Col>
           
             <Col xs={4} className="padded-column">
@@ -349,8 +392,14 @@ function App() {
               </Row>
               <Row>
                 <div className="info-box">
-                  <div className="info-header">Total tokens </div>
+                  <div className="info-header">Your tokens </div>
                   <div className="info-body">{userTokens} UNI{tokenSymbol}</div>
+                </div>
+              </Row>
+              <Row>
+                <div className="info-box">
+                  <div className="info-header">Approved Amount</div>
+                  <div className="info-body">{approvedBalance} {tokenSymbol}</div>
                 </div>
               </Row>
 
